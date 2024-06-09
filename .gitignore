@@ -1,0 +1,11 @@
+*.pt
+*.onnx
+*.engine
+
+*.mp4
+
+.venv/
+*.lock
+
+.vscode/
+build/
