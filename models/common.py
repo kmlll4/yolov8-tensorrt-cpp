@@ -25,7 +25,6 @@ def make_anchors(feats: Tensor,
 
 
 class TRT_NMS(torch.autograd.Function):
-
     @staticmethod
     def forward(
             ctx: Graph,
@@ -45,9 +44,7 @@ class TRT_NMS(torch.autograd.Function):
                                  dtype=torch.int32)
         boxes = torch.randn(batch_size, max_output_boxes, 4)
         scores = torch.randn(batch_size, max_output_boxes)
-        labels = torch.randint(0,
-                               num_classes, (batch_size, max_output_boxes),
-                               dtype=torch.int32)
+        labels = torch.randint(0, num_classes, (batch_size, max_output_boxes), dtype=torch.int32)
 
         return num_dets, boxes, scores, labels
 
@@ -79,7 +76,6 @@ class TRT_NMS(torch.autograd.Function):
 
 
 class C2f(nn.Module):
-
     def __init__(self, *args, **kwargs):
         super().__init__()
 
@@ -120,8 +116,7 @@ class PostDetect(nn.Module):
         boxes = self.anchors.repeat(b, 2, 1) + torch.cat([boxes0, boxes1], 1)
         boxes = boxes * self.strides
 
-        return TRT_NMS.apply(boxes.transpose(1, 2), scores.transpose(1, 2),
-                             self.iou_thres, self.conf_thres, self.topk)
+        return TRT_NMS.apply(boxes.transpose(1, 2), scores.transpose(1, 2), self.iou_thres, self.conf_thres, self.topk)
 
 
 class PostSeg(nn.Module):

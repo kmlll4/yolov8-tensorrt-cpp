@@ -1,6 +1,3 @@
-//
-// Created by ubuntu on 4/7/23.
-//
 #include "chrono"
 #include "opencv2/opencv.hpp"
 #include "yolov8-pose.hpp"

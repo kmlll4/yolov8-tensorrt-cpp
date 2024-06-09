@@ -1,13 +1,9 @@
-//
-// Created by ubuntu on 2/9/23.
-//
+#pragma once
 
-#ifndef SEGMENT_SIMPLE_COMMON_HPP
-#define SEGMENT_SIMPLE_COMMON_HPP
 #include "NvInfer.h"
 #include "opencv2/opencv.hpp"
-#include <sys/stat.h>
-#include <unistd.h>
+#include <filesystem>
+
 
 #define CHECK(call)                                                                                                    \
     do {                                                                                                               \
@@ -89,34 +85,24 @@ inline static float clamp(float val, float min, float max)
     return val > min ? (val < max ? val : max) : min;
 }
 
-inline bool IsPathExist(const std::string& path)
-{
-    if (access(path.c_str(), 0) == F_OK) {
-        return true;
-    }
-    return false;
+inline bool IsPathExist(const std::string& path) {
+    return std::filesystem::exists(path);
 }
 
-inline bool IsFile(const std::string& path)
-{
+inline bool IsFile(const std::string& path) {
     if (!IsPathExist(path)) {
-        printf("%s:%d %s not exist\n", __FILE__, __LINE__, path.c_str());
+        std::cerr << __FILE__ << ":" << __LINE__ << " " << path << " not exist" << std::endl;
         return false;
     }
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0 && S_ISREG(buffer.st_mode));
+    return std::filesystem::is_regular_file(path);
 }
 
-inline bool IsFolder(const std::string& path)
-{
-    if (!IsPathExist(path)) {
-        return false;
-    }
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+inline bool IsFolder(const std::string& path) {
+    return std::filesystem::exists(path) && std::filesystem::is_directory(path);
 }
 
 namespace seg {
+
 struct Binding {
     size_t size  = 1;
     size_t dsize = 1;
@@ -138,5 +124,5 @@ struct PreParam {
     float height = 0;
     float width  = 0;
 };
+
 }  // namespace seg
-#endif  // SEGMENT_SIMPLE_COMMON_HPP

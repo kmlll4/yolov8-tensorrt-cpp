@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 
     const std::string engine_file_path{argv[1]};
     const std::string path{argv[2]};
-    const std::string config_file{"config/class_names_and_colors.json"};
+    const std::string config_file{"config/dtc_default.json"};
 
     load_class_names_and_colors(config_file);
 

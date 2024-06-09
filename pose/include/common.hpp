@@ -1,14 +1,9 @@
+#pragma once
 
-//
-// Created by ubuntu on 4/7/23.
-//
-
-#ifndef POSE_NORMAL_COMMON_HPP
-#define POSE_NORMAL_COMMON_HPP
 #include "NvInfer.h"
 #include "opencv2/opencv.hpp"
-#include <sys/stat.h>
-#include <unistd.h>
+#include <filesystem>
+
 
 #define CHECK(call)                                                                                                    \
     do {                                                                                                               \
@@ -85,59 +80,48 @@ inline int type_to_size(const nvinfer1::DataType& dataType)
     }
 }
 
-inline static float clamp(float val, float min, float max)
-{
+inline static float clamp(float val, float min, float max) {
     return val > min ? (val < max ? val : max) : min;
 }
 
-inline bool IsPathExist(const std::string& path)
-{
-    if (access(path.c_str(), 0) == F_OK) {
-        return true;
-    }
-    return false;
+inline bool IsPathExist(const std::string& path) {
+    return std::filesystem::exists(path);
 }
 
-inline bool IsFile(const std::string& path)
-{
+inline bool IsFile(const std::string& path) {
     if (!IsPathExist(path)) {
-        printf("%s:%d %s not exist\n", __FILE__, __LINE__, path.c_str());
+        std::cerr << __FILE__ << ":" << __LINE__ << " " << path << " not exist" << std::endl;
         return false;
     }
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0 && S_ISREG(buffer.st_mode));
+    return std::filesystem::is_regular_file(path);
 }
 
-inline bool IsFolder(const std::string& path)
-{
-    if (!IsPathExist(path)) {
-        return false;
-    }
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+inline bool IsFolder(const std::string& path) {
+    return std::filesystem::exists(path) && std::filesystem::is_directory(path);
 }
 
 namespace pose {
+
 struct Binding {
-    size_t         size  = 1;
-    size_t         dsize = 1;
+    size_t size  = 1;
+    size_t dsize = 1;
     nvinfer1::Dims dims;
-    std::string    name;
+    std::string name;
 };
 
 struct Object {
-    cv::Rect_<float>   rect;
-    int                label = 0;
-    float              prob  = 0.0;
+    cv::Rect_<float> rect;
+    int label = 0;
+    float prob  = 0.0;
     std::vector<float> kps;
 };
 
 struct PreParam {
-    float ratio  = 1.0f;
-    float dw     = 0.0f;
-    float dh     = 0.0f;
+    float ratio = 1.0f;
+    float dw = 0.0f;
+    float dh = 0.0f;
     float height = 0;
-    float width  = 0;
+    float width = 0;
 };
+
 }  // namespace pose
-#endif  // POSE_NORMAL_COMMON_HPP

@@ -107,8 +107,10 @@ target_link_libraries(segmentation PUBLIC
 # Debug build specific settings
 set_target_properties(segmentation PROPERTIES DEBUG_POSTFIX "d")
 
+### pose
 set(SOURCES_POSE
-    pose/main.cpp
+    pose/src/pose.cpp
+    pose/src/yolov8-pose.cpp
 )
 
 set(HEADERS_POSE

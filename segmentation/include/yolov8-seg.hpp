@@ -1,4 +1,4 @@
-#pragma onece
+#pragma once
 
 #include "NvInferPlugin.h"
 #include "common.hpp"
@@ -25,11 +25,11 @@ public:
                                      int seg_w = 160);
 
     static void draw_objects(const cv::Mat& image,
-                                      cv::Mat& res,
-                                      const std::vector<Object>& objs,
-                                      const std::vector<std::string>& CLASS_NAMES,
-                                      const std::vector<std::vector<unsigned int>>& COLORS,
-                                      const std::vector<std::vector<unsigned int>>& MASK_COLORS);
+                             cv::Mat& res,
+                             const std::vector<Object>& objs,
+                             const std::vector<std::string>& CLASS_NAMES,
+                             const std::vector<std::vector<unsigned int>>& COLORS,
+                             const std::vector<std::vector<unsigned int>>& MASK_COLORS);
     int num_bindings;
     int num_inputs  = 0;
     int num_outputs = 0;
