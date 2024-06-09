@@ -92,7 +92,7 @@ YOLOv8::~YOLOv8()
     runtime.reset();
 }
 
-void YOLOv8::make_pipe(bool warmup) {
+void YOLOv8::makePipe(bool warmup) {
     for (auto& bindings : input_bindings) {
         void* d_ptr;
         CHECK(cudaMallocAsync(&d_ptr, bindings.size * bindings.dsize, stream));
@@ -123,7 +123,7 @@ void YOLOv8::make_pipe(bool warmup) {
     }
 }
 
-void YOLOv8::letterbox(const cv::Mat& image, cv::Mat& out, cv::Size& size) {
+void YOLOv8::letterBox(const cv::Mat& image, cv::Mat& out, cv::Size& size) {
     const float inp_h  = size.height;
     const float inp_w  = size.width;
     float height = image.rows;
@@ -173,22 +173,22 @@ void YOLOv8::letterbox(const cv::Mat& image, cv::Mat& out, cv::Size& size) {
     pparam.width = width;
 }
 
-void YOLOv8::copy_from_Mat(const cv::Mat& image) {
+void YOLOv8::copyFromMat(const cv::Mat& image) {
     cv::Mat nchw;
     auto& in_binding = input_bindings[0];
     int width = in_binding.dims.d[3];
     int height = in_binding.dims.d[2];
     cv::Size size{width, height};
-    letterbox(image, nchw, size);
+    letterBox(image, nchw, size);
 
     context->setBindingDimensions(0, nvinfer1::Dims{4, {1, 3, height, width}});
 
     CHECK(cudaMemcpyAsync(device_ptrs[0], nchw.ptr<float>(), nchw.total() * nchw.elemSize(), cudaMemcpyHostToDevice, stream));
 }
 
-void YOLOv8::copy_from_Mat(const cv::Mat& image, cv::Size& size) {
+void YOLOv8::copyFromMat(const cv::Mat& image, cv::Size& size) {
     cv::Mat nchw;
-    letterbox(image, nchw, size);
+    letterBox(image, nchw, size);
     context->setBindingDimensions(0, nvinfer1::Dims{4, {1, 3, size.height, size.width}});
     CHECK(cudaMemcpyAsync(device_ptrs[0], nchw.ptr<float>(), nchw.total() * nchw.elemSize(), cudaMemcpyHostToDevice, stream));
 }
@@ -202,7 +202,7 @@ void YOLOv8::infer() {
     cudaStreamSynchronize(stream);
 }
 
-void YOLOv8::postprocess(std::vector<Object>& objs) {
+void YOLOv8::postProcess(std::vector<Object>& objs) {
     objs.clear();
     int*  num_dets = static_cast<int*>(host_ptrs[0]);
     auto* boxes = static_cast<float*>(host_ptrs[1]);
@@ -236,11 +236,11 @@ void YOLOv8::postprocess(std::vector<Object>& objs) {
     }
 }
 
-void YOLOv8::draw_objects(const cv::Mat& image,
-                          cv::Mat& res,
-                          const std::vector<Object>& objs,
-                          const std::vector<std::string>& CLASS_NAMES,
-                          const std::vector<std::vector<unsigned int>>& COLORS) {
+void YOLOv8::drawObjects(const cv::Mat& image,
+                         cv::Mat& res,
+                         const std::vector<Object>& objs,
+                         const std::vector<std::string>& CLASS_NAMES,
+                         const std::vector<std::vector<unsigned int>>& COLORS) {
     res = image.clone();
     for (auto& obj : objs) {
         cv::Scalar color = cv::Scalar(COLORS[obj.label][0], COLORS[obj.label][1], COLORS[obj.label][2]);
@@ -260,7 +260,6 @@ void YOLOv8::draw_objects(const cv::Mat& image,
         }
 
         cv::rectangle(res, cv::Rect(x, y, label_size.width, label_size.height + baseLine), {0, 0, 255}, -1);
-
         cv::putText(res, text, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.4, {255, 255, 255}, 1);
     }
 }

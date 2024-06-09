@@ -34,7 +34,7 @@ int main(int argc, char** argv)
     assert(argc == 3);
 
     auto detector = std::make_shared<det::YOLOv8>(engine_file_path);
-    detector->make_pipe(true);
+    detector->makePipe(true);
 
     if (IsFile(path)) {
         std::string suffix = path.substr(path.find_last_of('.') + 1);
@@ -69,12 +69,12 @@ int main(int argc, char** argv)
         }
         while (cap.read(image)) {
             objs.clear();
-            detector->copy_from_Mat(image, size);
+            detector->copyFromMat(image, size);
             auto start = std::chrono::system_clock::now();
             detector->infer();
             auto end = std::chrono::system_clock::now();
-            detector->postprocess(objs);
-            detector->draw_objects(image, res, objs, CLASS_NAMES, COLORS);
+            detector->postProcess(objs);
+            detector->drawObjects(image, res, objs, CLASS_NAMES, COLORS);
             auto tc = (double)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.;
             printf("cost %2.4lf ms\n", tc);
             cv::imshow("result", res);
@@ -87,12 +87,12 @@ int main(int argc, char** argv)
         for (auto& path : imagePathList) {
             objs.clear();
             image = cv::imread(path);
-            detector->copy_from_Mat(image, size);
+            detector->copyFromMat(image, size);
             auto start = std::chrono::system_clock::now();
             detector->infer();
             auto end = std::chrono::system_clock::now();
-            detector->postprocess(objs);
-            detector->draw_objects(image, res, objs, CLASS_NAMES, COLORS);
+            detector->postProcess(objs);
+            detector->drawObjects(image, res, objs, CLASS_NAMES, COLORS);
             auto tc = (double)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.;
             printf("cost %2.4lf ms\n", tc);
             cv::imshow("result", res);

@@ -10,13 +10,13 @@ public:
     explicit YOLOv8(const std::string& engine_file_path);
     ~YOLOv8();
 
-    void make_pipe(bool warmup = true);
-    void copy_from_Mat(const cv::Mat& image);
-    void copy_from_Mat(const cv::Mat& image, cv::Size& size);
-    void letterbox(const cv::Mat& image, cv::Mat& out, cv::Size& size);
+    void makePipe(bool warmup = true);
+    void copyFromMat(const cv::Mat& image);
+    void copyFromMat(const cv::Mat& image, cv::Size& size);
+    void letterBox(const cv::Mat& image, cv::Mat& out, cv::Size& size);
     void infer();
-    void postprocess(std::vector<Object>& objs);
-    static void draw_objects(const cv::Mat& image,
+    void postProcess(std::vector<Object>& objs);
+    static void drawObjects(const cv::Mat& image,
                             cv::Mat& res,
                             const std::vector<Object>& objs,
                             const std::vector<std::string>& CLASS_NAMES,
