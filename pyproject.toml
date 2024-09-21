@@ -6,13 +6,13 @@ authors = ["kmlll4 <develop@kmworks-lll4.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 onnxruntime-gpu = "^1.18.0"
 torch = "^2.3.1"
 torchvision = "^0.18.1"
 ultralytics = "^8.2.29"
 onnxsim = "^0.4.36"
-tensorrt = {path = "wheels/tensorrt-8.6.1-cp310-none-linux_x86_64.whl"}
+tensorrt = {path = "wheels/tensorrt-8.6.1-cp311-none-linux_x86_64.whl"}
 
 
 [build-system]
